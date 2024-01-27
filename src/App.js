@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js (or index.js)
+import React, { useEffect, useState } from 'react';
+import { auth } from './firebase';
+import Chat from './Chat';
+import SignIn from './SignIn';
+import './App.css'
+
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      setUser(authUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+      {user ? <Chat /> : <SignIn />}
     </div>
   );
 }
